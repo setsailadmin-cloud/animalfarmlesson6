@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SetSail Novel Course - Animal Farm Lesson 6</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration for class-based Dark Mode -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            fadeIn: 'fadeIn 0.3s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(8px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar and Helper Classes */
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+  </style>
+
+  <!-- ==========================================
+      CORE DATA & APP CONTROLLER
+      ========================================== -->
+  <script>
+    // Chapter 5 Vocabulary (Lesson 5 Homework Review - directly from image_672162.png & image_6725fe.png)
+    const vocabularyCh5 = [
+      { word: 'Advocating', type: 'verb/adj', definition: 'Supporting; recommending.', example: '"Snowball did not deny that to build it would be a difficult business... but he advocated it nonetheless."', pronunciation: 'AD-vuh-kay-ting' },
+      { word: 'Articulate', type: 'adjective', definition: 'Well-spoken; able to express ideas clearly.', example: '"Some of them were incredibly dumb... but the pigs were more articulate and could explain things clearly."', pronunciation: 'ar-TIK-yoo-lit' },
+      { word: 'Baying', type: 'verb/adj', definition: 'Howling; making deep, prolonged barking sounds.', example: '"Then turned and fled... and there was a terrible baying sound as nine enormous dogs bounded into the barn."', pronunciation: 'BAY-ing' },
+      { word: 'Blithely', type: 'adverb', definition: 'Without concern; cheerfully and carefree.', example: '"One day, as Mollie was standing blithely in the yard, flirting her mane and chewing at a stalk of hay..."', pronunciation: 'BLYTHE-lee' },
+      { word: 'Canvassing', type: 'noun/verb', definition: 'Looking for votes; soliciting support.', example: '"Napoleon was better at canvassing support for himself in between times."', pronunciation: 'KAN-vus-ing' },
+      { word: 'Disinterred', type: 'verb (past tense)', definition: 'Dug up; exhumed from a grave.', example: '"The skull of Old Major, which had been clean of flesh, had been disinterred from the orchard..."', pronunciation: 'dis-in-TERD' },
+      { word: 'Dynamo', type: 'noun', definition: 'An electrical generator.', example: '"Snowball painted a picture of Animal Farm... with electricity to run a circular saw, a chaff-cutter, and a dynamo."', pronunciation: 'DY-nuh-moh' },
+      { word: 'Eloquence', type: 'noun', definition: 'An excellent and persuasive use of words.', example: '"Until now the animals had been about equally divided in their sympathies, but in a moment Snowball\'s eloquence carried them away."', pronunciation: 'EL-uh-kwens' },
+      { word: 'Expulsion', type: 'noun', definition: 'The act of expelling or forcing out.', example: '"After the expulsion of Snowball, Napoleon announced that the Sunday morning meetings would come to an end."', pronunciation: 'ek-SPUL-shun' },
+      { word: 'Gaiters', type: 'noun', definition: 'Covers for shoes and lower legs.', example: '"Mr. Pilkington was walking in his garden in breeches and leather gaiters..."', pronunciation: 'GAY-terz' },
+      { word: 'Incubators', type: 'noun (plural)', definition: 'Places for keeping newborns or hatching eggs warm.', example: '"Snowball spoke of plans for hot and cold water, and electric light in the barns, and of incubators for the chicks."', pronunciation: 'IN-kyoo-bay-terz' },
+      { word: 'Manifestly', type: 'adverb', definition: 'Obviously, clearly.', example: '"It was manifestly absurd, they said, to expect animals to manage a farm on their own."', pronunciation: 'man-ih-FEST-lee' },
+      { word: 'Moonshine', type: 'noun', definition: 'Foolishness, nonsense; foolish talk.', example: '"Napoleon had declared Snowball\'s windmill plan to be sheer moonshine and advised no one to vote for it."', pronunciation: 'MOON-shyne' },
+      { word: 'Pretext', type: 'noun', definition: 'An excuse; false reason.', example: '"On every kind of pretext Mollie would run away from work and go to the pool, where she stood foolishly gazing at her reflection."', pronunciation: 'PREE-tekst' },
+      { word: 'Procured', type: 'verb (past tense)', definition: 'Got or obtained with care or effort.', example: '"According to Napoleon, what was needed was to procure firearms and train themselves in the use of them."', pronunciation: 'proh-KYOORD' },
+      { word: 'Publican', type: 'noun', definition: 'A pub keeper; tax collector.', example: '"A fat red-faced man who looked like a publican was stroking Mollie\'s nose and feeding her with sugar."', pronunciation: 'PUB-lih-kun' },
+      { word: 'Ratified', type: 'verb (past tense)', definition: 'Voted on; formally approved.', example: '"It was decided that the pigs should decide all questions of farm policy, though their decisions had to be ratified by a majority vote."', pronunciation: 'RAT-ih-fyde' },
+      { word: 'Reinstate', type: 'verb', definition: 'To put back in office or former position.', example: '"The animals were alarmed to hear that Napoleon intended to reinstate some of the old, discredited rules."', pronunciation: 'ree-in-STATE' },
+      { word: 'Restive', type: 'adjective', definition: 'Disliking control; restless; uneasy.', example: '"The rumor spread that the animals on the neighboring farms were more restive than ever."', pronunciation: 'RES-tiv' },
+      { word: 'Silage', type: 'noun', definition: 'Stored green food for animals.', example: '"They would build a new silo to store silage and keep the feed fresh during the winter months."', pronunciation: 'SY-lij' },
+      { word: 'Sordid', type: 'adjective', definition: 'Dirty, foul; morally degraded.', example: '"He painted a picture of a golden future when sordid labour should have been banished from the earth."', pronunciation: 'SOR-did' },
+      { word: 'Watchword', type: 'noun', definition: 'A rallying slogan.', example: '"Napoleon announced their new watchword: \'Iron discipline! Obedience and labor!\'"', pronunciation: 'WOCH-werd' }
+    ];
+
+    // Lesson 5 Homework Open Questions & Model Answers (Evaluating Ch 5 Prep)
+    const homeworkReviewQuestions = [
+      {
+        id: 'hwq1',
+        title: 'Snowball vs. Napoleon (Ideological Split)',
+        question: 'Analyze the growing conflict between Snowball and Napoleon in Chapter 5. How do their different approaches to the Windmill and the defense of the farm represent the historical split between Trotsky and Stalin?',
+        modelAnswer: 'The conflict over the Windmill represents the historical division between Leon Trotsky and Joseph Stalin. Snowball\'s Windmill plans represent Trotsky\'s plans for rapid industrialization and modernization of the Soviet Union. His desire to send out more pigeons to spark global rebellion matches Trotsky\'s theory of "Permanent Revolution." Conversely, Napoleon\'s opposition to the Windmill, and his focus on procuring firearms and stockpiling food represent Joseph Stalin\'s focused plan of "Socialism in One Country"—consolidating and protecting state power inside their own borders before expanding.',
+        rubric: 'Excellent answers must mention: Snowball representing Trotsky (industrialization, global permanent revolution), Napoleon representing Stalin (firearms, stockpiling food, Socialism in One Country), and the use of the dogs as Stalin\'s secret police (NKVD).'
+      },
+      {
+        id: 'hwq2',
+        title: 'Mollie\'s Desertion (The Bourgeois Escape)',
+        question: 'Mollie\'s desertion of Animal Farm is a key event in Chapter 5. What does her decision to return to human luxury reveal about her character, and what historical group does she represent?',
+        modelAnswer: 'Mollie represents the Russian bourgeoisie (petite bourgeoisie) and white-collar middle-class class factions who enjoyed the comfortable lifestyle, luxury, and privileges of the Czarist regime. Her desertion reveals that she is vain, self-absorbed, and entirely unwilling to sacrifice her own comforts for collective class equality. When she is discovered accepting sugar and ribbons from a human publican, her choice represents those middle-class citizens who fled the Soviet Union after the revolution to preserve their personal wealth and comfort in capitalist nations.',
+        rubric: 'Excellent answers must analyze: Mollie representing the bourgeoisie, her preference for material vanity (sugar and ribbons) over freedom/equality, and her emigration reflecting the post-revolutionary flight of middle-class Russians.'
+      }
+    ];
+
+    // Lesson 5 Vocabulary Quiz (Ch 5 terms from image_672162.png & image_6725fe.png)
+    const quizQuestions = [
+      {
+        id: 1,
+        word: 'Canvassing',
+        question: 'Napoleon was described as being better at "canvassing" support for himself in between times. What does "canvassing" mean?',
+        options: [
+          'Planning a complex battle array.',
+          'Looking for votes; soliciting support.',
+          'Screaming loudly to drown out others.',
+          'Digging up graves in the orchard.'
+        ],
+        correctAnswer: 1,
+        explanation: '"Canvassing" means looking for votes or soliciting support. While Snowball had brilliant speeches during meetings, Napoleon systematically worked behind the scenes to gather support from the sheep and other animals.'
+      },
+      {
+        id: 2,
+        word: 'Eloquence',
+        question: 'In a moment, Snowball\'s "eloquence" carried the animals away during the Windmill debate. What does "eloquence" mean?',
+        options: [
+          'An excellent use of words; persuasive speaking.',
+          'A loud and unpleasant noise.',
+          'A physical attack involving trained guard dogs.',
+          'An unchangeable, fixed rule of law.'
+        ],
+        correctAnswer: 0,
+        explanation: '"Eloquence" refers to persuasive, excellent speech. Snowball was a master orator whose descriptive, soaring imagery easily won over the crowd during major debates.'
+      },
+      {
+        id: 3,
+        word: 'Expulsion',
+        question: 'After the "expulsion" of Snowball, Napoleon declared that Sunday meetings were ended. What does "expulsion" mean?',
+        options: [
+          'An impromptu celebration of victory.',
+          'The act of forcing someone out or expelling them.',
+          'A state of complete indifference and apathy.',
+          'Voting formally on a new resolution.'
+        ],
+        correctAnswer: 1,
+        explanation: 'An "expulsion" is the act of expelling or forcing out. Napoleon used his trained hounds to execute Snowball\'s violent expulsion, seizing complete control of the farm.'
+      },
+      {
+        id: 4,
+        word: 'Moonshine',
+        question: 'Napoleon declared that Snowball\'s windmill scheme was sheer "moonshine." What does "moonshine" mean in this context?',
+        options: [
+          'A period of two weeks.',
+          'A highly organized military tactic.',
+          'Foolishness, nonsense; foolish talk.',
+          'A brilliant, shining light at night.'
+        ],
+        correctAnswer: 2,
+        explanation: 'In this context, "moonshine" means nonsense or foolish talk. Napoleon publicly dismissed the Windmill plans as unrealistic and impossible to build.'
+      },
+      {
+        id: 5,
+        word: 'Pretext',
+        question: 'Mollie ran away from work on every kind of "pretext." What is a "pretext"?',
+        options: [
+          'An excuse.',
+          'A severe beating with a whip.',
+          'A tax collector or pub keeper.',
+          'Stored green food for cattle.'
+        ],
+        correctAnswer: 0,
+        explanation: 'A "pretext" is an excuse. Mollie consistently made up excuses, like having a pain in her hoof or oversleeping, to avoid manual labor.'
+      }
+    ];
+
+    // Chapter 5: READING AND THINKING INTENSIVE QUEST (16 Questions from uploaded images)
+    const readingThinkingQuestions = [
+      {
+        id: 'rt1',
+        num: 1,
+        category: 'escape',
+        question: 'What happens to Mollie? What significance to the Russian Revolution does this have? Explain the irony of Orwell’s comment that "None of the other animals ever mentioned Mollie again."',
+        answer: 'Mollie runs away and deserts the farm for the pleasures of the old life. Since Mollie loves the finery she wore before the revolution and has fled Animal Farm, she represents the aristocrats and wealthy bourgeoisie with ties to the Czar who fled Russia at the first opportunity. The irony of Orwell\'s comment is that while the animals pretend she never existed to maintain the illusion of revolutionary unity, Mollie looks pretty, well-fed, and "appeared to be enjoying herself" in her new home—something the animals working on the farm are clearly not doing.',
+        tutorTip: 'Discuss the psychological impact of Mollie\'s desertion. Why is it a taboo subject for the other animals?'
+      },
+      {
+        id: 'rt2',
+        num: 2,
+        category: 'escape',
+        question: 'Why have the pigs become a central committee that does all the planning? Explain the irony of this decision-making process.',
+        answer: 'Because the pigs "were manifestly cleverer than the other animals, [they] decide all questions of farm policy." The irony of this decision-making process is that while the animals are still technically allowed to vote on the pigs\' decisions, their votes are completely meaningless since they cannot formulate resolutions or alternative plans of their own.',
+        tutorTip: 'Draw parallels to how Soviet democratic councils (Soviets) quickly lost all power to the centralized Politburo committee.'
+      },
+      {
+        id: 'rt3',
+        num: 3,
+        category: 'escape',
+        question: 'What use has Napoleon made of the sheep? What seems to be happening between Napoleon and Snowball? What literary device is Orwell using in reference to Napoleon and Snowball?',
+        answer: 'Napoleon uses the sheep to interrupt Snowball\'s speeches by having them bleat the "four legs good, two legs bad" slogan during crucial moments of debate. Napoleon is intent on full dictatorial powers, whereas Snowball simply wants the goals of Animalism achieved. Snowball has specific plans for the future improvement of the farm, while Napoleon "produced no schemes of his own... and seemed to be biding his time." Orwell uses the literary device of *foreshadowing* to prepare the reader for a major, inevitable conflict between these two pigs.',
+        tutorTip: 'Discuss how the sheep represent the uneducated, easily manipulated masses used by dictators to drown out intellectual debate.'
+      },
+      {
+        id: 'rt4',
+        num: 4,
+        category: 'windmill',
+        question: 'What is Snowball’s dream for the windmill? What is Napoleon’s thinking about the windmill?',
+        answer: 'Snowball wants to build a windmill that will supply electrical power to the farm to run machinery, heat stalls, and light the barn, which would reduce the workweek to three days. Napoleon discredits this plan at every opportunity, even urinating on Snowball\'s blueprints, arguing that building it will take too much labor and cause the animals to starve.',
+        tutorTip: 'Help the student connect the Windmill to Trotsky\'s industrialization debates and Stalin\'s early resistance to them.'
+      },
+      {
+        id: 'rt5',
+        num: 5,
+        category: 'windmill',
+        question: 'A second major point of disagreement between the pigs is the defense of the farm. What point of view does each have?',
+        answer: 'Napoleon says the animals must get firearms and prepare to defend themselves from another impending attack from humans. Snowball believes they should concentrate on sending out more pigeons to spread the revolution among animals on neighboring farms, arguing that if all neighboring farmers are overthrown, there will be no humans left to attack.',
+        tutorTip: 'Compare Snowball\'s global revolution model (Trotsky\'s Permanent Revolution) with Napoleon\'s fortress defense (Stalin\'s Socialism in One Country).'
+      },
+      {
+        id: 'rt6',
+        num: 6,
+        category: 'windmill',
+        question: 'Which pig’s arguments win the support of the other animals?',
+        answer: 'Since Napoleon barely speaks in favor of his points, and Snowball outlines an almost-utopian existence with mechanical comforts, all the animals favor Snowball\'s plan.',
+        tutorTip: 'Highlight the difference between winning popular support through ideas (Snowball) versus securing real power through force (Napoleon).'
+      },
+      {
+        id: 'rt7',
+        num: 7,
+        category: 'coup',
+        question: 'How does the disagreement between Napoleon and Snowball end?',
+        answer: 'Napoleon sets his nine trained dogs on Snowball during the final Windmill vote. Snowball is forced to flee the farm to save his life.',
+        tutorTip: 'Explain this climax as the transition from a shared revolutionary council to a military dictatorship.'
+      },
+      {
+        id: 'rt8',
+        num: 8,
+        category: 'coup',
+        question: 'Where do the dogs come from?',
+        answer: 'The dogs are the puppies Napoleon had taken from their mothers (Jessie and Bluebell) and raised and trained in secret inside the farmhouse loft. These dogs "wagged their tails to him in the same way as the other dogs had been used to do to Mr. Jones."',
+        tutorTip: 'Analyze the terrifying detail of the dogs wagging their tails to Napoleon like they did to Jones. What does this reveal about Napoleon\'s transformation?'
+      },
+      {
+        id: 'rt9',
+        num: 9,
+        category: 'coup',
+        question: 'How do they act around Napoleon? What might Orwell’s description signify? How does this action conform to Stalin and the aftermath of the Russian Revolution?',
+        answer: 'The dogs wag their tails to Napoleon and stay close to him. This signifies that Napoleon has successfully established a private, brainwashed military force that views him as their master. This action conforms to Joseph Stalin\'s use of the Soviet Secret Police (NKVD/KGB) to execute his personal bidding gladly, securing absolute control through terror.',
+        tutorTip: 'Help the student connect the secret rearing of the puppies to state-controlled police forces.'
+      },
+      {
+        id: 'rt11',
+        num: 11,
+        category: 'coup',
+        question: 'What is unusually menacing about the dogs growling at the young pigs?',
+        answer: 'Because the small pigs "uttered shrill squeals of disapproval" at the ending of Sunday meetings and were immediately silenced by the menacing growling of the dogs, it is clear that Napoleon has no concern about anyone, even his own species, who questions his decisions.',
+        tutorTip: 'Note this as a major red flag: the regime will not hesitate to purge its own party members (representing Stalin\'s party purges).'
+      },
+      {
+        id: 'rt10',
+        num: 10,
+        category: 'revisionist',
+        question: 'What does Napoleon do to put an end to any opposition?',
+        answer: 'He says the debates on Sundays just waste time. In the future, a committee of pigs, presided over by Napoleon himself, will make all decisions without debate. No one dares to object because his power is reinforced by the threat of the dogs.',
+        tutorTip: 'Discuss the structural abolition of democracy. Free speech is officially replaced by executive decrees.'
+      },
+      {
+        id: 'rt12',
+        num: 12,
+        category: 'revisionist',
+        question: 'In the classic style of a tyrant, how does Napoleon, through Squealer, go about rewriting history?',
+        answer: 'Squealer represents Molotov, the disseminator of propaganda. He first suggests that Snowball\'s bravery in the Battle of the Cowshed had been exaggerated. He goes on to say the pigs all knew Snowball was dangerous.',
+        tutorTip: 'Explore how historical revisionism functions in total states—events are continuously rewritten to suit the current ruler.'
+      },
+      {
+        id: 'rt13',
+        num: 13,
+        category: 'revisionist',
+        question: 'Napoleon, now a tyrannical leader, uses what methods to make his own personality and vision the law on Animal Farm?',
+        answer: 'He displays Major\'s skull as a symbol of what the animals revere and arranges the seating during meetings to show his own importance and power.',
+        tutorTip: 'Discuss the use of state rituals and relics (like Lenin\'s tomb) to manipulate public reverence and validate authority.'
+      },
+      {
+        id: 'rt14',
+        num: 14,
+        category: 'revisionist',
+        question: 'What will now happen with the windmill planning? How does Squealer explain it?',
+        answer: 'The animals will, indeed, build the windmill. Squealer explains that Napoleon had only pretended to oppose the idea of the windmill. In fact, Squealer claims the idea of the windmill had been initially Napoleon\'s idea, but Snowball had stolen it.',
+        tutorTip: 'Explain the sheer audacity of this lie. Dictators frequently steal their rivals\' ideas after eliminating them, claiming them as their own genius.'
+      },
+      {
+        id: 'rt15',
+        num: 15,
+        category: 'revisionist',
+        question: 'What two things convince the animals of the truth of Squealer’s pronouncements?',
+        answer: 'Squealer’s persuasive way of speaking and the threatening growls of the three dogs that accompany him intimidate the other animals so much that they agree with him.',
+        tutorTip: 'Highlight this double-layered oppression: soft persuasion/lies on the surface, backed by raw military terror underneath.'
+      },
+      {
+        id: 'rt16',
+        num: 16,
+        category: 'revisionist',
+        question: 'What offhand comment does Orwell make at the end of the chapter that conveys innocence and Squealer’s use of the word *tactics*?',
+        answer: 'The dogs, used for their menacing effect, just "happened to be with him."',
+        tutorTip: 'Discuss Orwell\'s brilliant dry irony here. The dogs\' "accidental" presence is a transparent threat of violence packaged as coincidence.'
+      }
+    ];
+
+    // Chapter 6 Vocabulary Preview (RESTRICTED TO DEFINITIONS FROM image_b522ff.png)
+    const vocabularyCh6 = [
+      { word: 'Arable', definition: 'Farmable.' },
+      { word: 'Broker', definition: 'An agent.' },
+      { word: 'Commissions', definition: 'Added payments.' },
+      { word: 'Compensated', definition: 'Paid.' },
+      { word: 'Imposing', definition: 'Impressive.' },
+      { word: 'Indignation', definition: 'Anger.' },
+      { word: 'Intermediary', definition: 'A go-between; mediator.' },
+      { word: 'Malignity', definition: 'Hatred.' },
+      { word: 'Perspective', definition: 'Point of view.' },
+      { word: 'Reconciled', definition: 'Made an agreement.' },
+      { word: 'Repose', definition: 'Rest.' },
+      { word: 'Solicitor', definition: 'A lawyer.' }
+    ];
+
+    function lessonApp() {
+      return {
+        // App State
+        isDarkMode: false,
+        activeTab: 'homework', // Start with Chapter 5 homework evaluation
+        viewedHomework: [],
+        viewedCh5Vocab: [], // Tracks student progression in Chapter 5 vocab checklist (homework review)
+        viewedCh6Vocab: [], // Tracks student progression in Chapter 6 vocab checklist (preview)
+        exploredQuestions: [], // Tracks student progression in Chapter 5 discussion quest
+        homeworkFeedback: {},
+        isGeneratingFeedback: false,
+        isCopied: false,
+        tutorMode: false, // Teacher Guide Helper
+        vocabIndex: 0,
+        isCardFlipped: false,
+
+        // Chapter 5 Quiz states
+        quizAnswers: {},
+        quizSubmitted: false,
+        quizScore: 0,
+
+        // COLLAPSIBLE CAMPAIGNS (Reading & Thinking Tab)
+        zones: [
+          { id: 'escape', title: '🚪 Campaign 1: Escape & Oligarchy', subtitle: 'Analyzing Mollie\'s desertion, the Central Committee, and Napoleon\'s sheep' },
+          { id: 'windmill', title: '⚙️ Campaign 2: The Windmill & War Plans', subtitle: 'Explaining Snowball\'s plans, Napoleon\'s opposition, and defense tactics' },
+          { id: 'coup', title: '🐕 Campaign 3: The Coup & The Hounds', subtitle: 'Deconstructing Snowball\'s expulsion, secret puppies, and menacing growls' },
+          { id: 'revisionist', title: '📜 Campaign 4: Revisionist History & "Tactics"', subtitle: 'Napoleon\'s Sunday ban, Major\'s skull ritual, and Squealer\'s revisionism' }
+        ],
+        activeZones: ['escape'], // Initially open Campaign 1
+
+        // Chapter 6 homework inputs (Preview Workspace)
+        homeworkAnswers: {
+          q1: '',
+          q2: ''
+        },
+
+        // Data bindings
+        vocabularyCh5: vocabularyCh5,
+        homeworkReviewQuestions: homeworkReviewQuestions,
+        quizQuestions: quizQuestions,
+        readingThinkingQuestions: readingThinkingQuestions,
+        vocabularyCh6: vocabularyCh6,
+
+        toggleTheme() {
+          this.isDarkMode = !this.isDarkMode;
+          const htmlClass = document.documentElement.classList;
+          if (this.isDarkMode) {
+            htmlClass.add('dark');
+          } else {
+            htmlClass.remove('dark');
+          }
+        },
+
+        toggleHomeworkLog(id) {
+          if (!this.viewedHomework.includes(id)) {
+            this.viewedHomework.push(id);
+          }
+        },
+
+        toggleCh5Vocab(word) {
+          if (!this.viewedCh5Vocab.includes(word)) {
+            this.viewedCh5Vocab.push(word);
+          }
+        },
+
+        toggleCh6Vocab(word) {
+          if (!this.viewedCh6Vocab.includes(word)) {
+            this.viewedCh6Vocab.push(word);
+          }
+        },
+
+        // Quest Toggle: Mark question as reviewed & update progress title
+        toggleQuestQuestion(id) {
+          if (!this.exploredQuestions.includes(id)) {
+            this.exploredQuestions.push(id);
+          } else {
+            this.exploredQuestions = this.exploredQuestions.filter(q => q !== id);
+          }
+        },
+
+        // Dynamic quest rank generator based on progress
+        get questRank() {
+          const count = this.exploredQuestions.length;
+          if (count === 0) return 'Barnyard Rookie 🚜';
+          if (count <= 4) return 'Political Activist 📣';
+          if (count <= 8) return 'Windmill Architect ⚙️';
+          if (count <= 12) return 'Resistance Leader ⚔️';
+          return 'Master of Soviet Satire 🏆';
+        },
+
+        toggleZone(id) {
+          if (this.activeZones.includes(id)) {
+            this.activeZones = this.activeZones.filter(z => z !== id);
+          } else {
+            this.activeZones.push(id);
+          }
+        },
+
+        // Speak word utilizing Web Speech API
+        speakWord(word) {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            window.speechSynthesis.speak(utterance);
+          }
+        },
+
+        // Quiz helpers
+        submitQuiz() {
+          let count = 0;
+          this.quizQuestions.forEach(q => {
+            if (this.quizAnswers[q.id] === q.correctAnswer) {
+              count += 1;
+            }
+          });
+          this.quizScore = count;
+          this.quizSubmitted = true;
+        },
+
+        resetQuiz() {
+          this.quizAnswers = {};
+          this.quizSubmitted = false;
+          this.quizScore = 0;
+        },
+
+        getQuizButtonStyle(qId, optIdx) {
+          const isSelected = this.quizAnswers[qId] === optIdx;
+          const correctAnswer = this.quizQuestions.find(q => q.id === qId).correctAnswer;
+          
+          if (this.quizSubmitted) {
+            if (optIdx === correctAnswer) {
+              return 'bg-emerald-500/25 border-emerald-600 text-emerald-700 dark:text-emerald-300 font-bold';
+            } else if (isSelected && this.quizAnswers[qId] !== correctAnswer) {
+              return 'bg-red-500/15 border-red-600 text-red-700 dark:text-red-400 line-through';
+            }
+          }
+          
+          if (isSelected) {
+            return 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400';
+          }
+
+          return this.isDarkMode 
+            ? 'bg-zinc-950/40 border-zinc-800 text-zinc-300 hover:bg-zinc-800/40' 
+            : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100';
+        },
+
+        get progressPercent() {
+          let score = 0;
+          const totalItems = 9;
+
+          if (this.quizSubmitted) score += 2;
+          if (this.viewedHomework.length >= 2) score += 1.5;
+
+          if (this.tutorMode) score += 0.5;
+
+          if (this.viewedCh6Vocab.length >= 4) score += 2;
+          else if (this.viewedCh6Vocab.length > 0) score += 1;
+
+          if (this.homeworkAnswers.q1.trim().length > 25) score += 1.5;
+          if (this.homeworkAnswers.q2.trim().length > 25) score += 1.5;
+
+          return Math.round((score / totalItems) * 100);
+        },
+
+        getAIFeedback() {
+          if (!this.homeworkAnswers.q1.trim() && !this.homeworkAnswers.q2.trim()) {
+            alert("Please draft answers to the Chapter 6 preview questions first!");
+            return;
+          }
+          this.isGeneratingFeedback = true;
+          setTimeout(() => {
+            this.isGeneratingFeedback = false;
+            this.homeworkFeedback = {
+              q1Feedback: this.homeworkAnswers.q1.trim().length > 50
+                ? "💡 Outstanding analysis! You accurately identified how the pigs added 'with sheets' to the Fourth Commandment to justify sleeping in the farmhouse beds, demonstrating Squealer's ability to manipulate memory. Connecting this to Soviet revisionism of history is excellent."
+                : "⚠️ Your draft needs more depth. Be sure to explain how Squealer's logical justifications regarding 'brainwork' and the threat of Jones's return successfully silences any dissent from the animals.",
+              q2Feedback: this.homeworkAnswers.q2.trim().length > 50
+                ? "💡 Spot on! You correctly analyzed Snowball's role as Napoleon's primary scapegoat. Blaming the destroyed windmill on Snowball prevents the animals from realizing the wall's structural inferiority, while consolidating Napoleon's power through a shared threat. This is pure totalitarian strategy."
+                : "⚠️ Expand your draft. Make sure to discuss both why Snowball serves as an easy scapegoat and how Napoleon uses this manufactured threat to unite the animals under his authority.",
+              status: "Draft Approved",
+              tip: "Incorporate upcoming Chapter 6 vocab terms like 'Capitulated', 'Categorically', 'Hitherto', or 'Retribution' to demonstrate active synthesis!"
+            };
+          }, 1200);
+        },
+
+        exportHomework() {
+          const fileContent = `=========================================
+SET SAIL NOVEL COURSE: ANIMAL FARM LESSON 6
+=========================================
+Student Draft - Chapter 6 Homework Prep
+
+Question 1: How do the pigs justify their decision to sleep in the farmhouse beds, and how does Squealer manipulate the animals' memory of the Fourth Commandment?
+----------------------------------------------------------------------
+Your Answer:
+${this.homeworkAnswers.q1 || "(No answer drafted)"}
+
+Question 2: The windmill is destroyed by a storm, but Napoleon immediately blames Snowball. Why is Snowball a convenient scapegoat, and how does this lie consolidate Napoleon's power?
+----------------------------------------------------------------------
+Your Answer:
+${this.homeworkAnswers.q2 || "(No answer drafted)"}
+
+----------------------------------------------------------------------
+Lesson Preparation Progress: ${this.progressPercent}% Completed
+Generated on: ${new Date().toLocaleDateString()}
+`;
+
+          const element = document.createElement("a");
+          const file = new Blob([fileContent], { type: 'text/plain' });
+          element.href = URL.createObjectURL(file);
+          element.download = "AnimalFarm_Lesson6_HomeworkPrep.txt";
+          document.body.appendChild(element);
+          element.click();
+          document.body.removeChild(element);
+        },
+
+        copyHomework() {
+          const text = `Q1 Draft:\n${this.homeworkAnswers.q1}\n\nQ2 Draft:\n${this.homeworkAnswers.q2}`;
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            this.isCopied = true;
+            setTimeout(() => this.isCopied = false, 2000);
+          } catch (err) {
+            console.error('Fallback copy failed', err);
+          }
+          document.body.removeChild(textArea);
+        }
+      };
+    }
+  </script>
+
+  <!-- Alpine.js CDN (with defer) -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="h-full">
+
+  <div 
+    x-data="lessonApp()" 
+    :class="isDarkMode ? 'dark bg-zinc-955 text-zinc-100' : 'bg-stone-50 text-stone-950'" 
+    class="min-h-screen font-sans transition-colors duration-300 flex flex-col justify-between"
+  >
+    
+    <!-- ==========================================
+        HEADER SECTION
+        ========================================== -->
+    <header class="border-b sticky top-0 z-50 transition-colors backdrop-blur-md h-16 bg-white/95 dark:bg-zinc-900/90 border-stone-200 dark:border-zinc-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <!-- BookOpen SVG -->
+          <div class="bg-emerald-600 dark:bg-emerald-700 p-2 rounded-lg text-white shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-widest font-bold text-emerald-600 dark:text-emerald-400">SetSail Novel Course</span>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">Animal Farm Lesson 6</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- Progress Indicator -->
+          <div class="hidden sm:flex items-center space-x-2 text-xs">
+            <span class="font-semibold text-stone-500 dark:text-zinc-400">Lesson Prep Progress:</span>
+            <div class="w-24 bg-stone-200 dark:bg-zinc-800 rounded-full h-2.5 overflow-hidden">
+              <div 
+                class="bg-emerald-600 dark:bg-emerald-500 h-2.5 rounded-full transition-all duration-500 ease-out" 
+                :style="`width: ${progressPercent}%`"
+              ></div>
+            </div>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400" x-text="`${progressPercent}%`"></span>
+          </div>
+
+          <!-- Dark Mode Toggle -->
+          <button
+            @click="toggleTheme()"
+            class="p-2.5 rounded-xl border transition-all bg-stone-100 border-stone-200 text-stone-600 hover:bg-stone-200 dark:bg-zinc-800 dark:border-zinc-700 dark:text-amber-400 dark:hover:bg-zinc-700"
+            title="Toggle Theme"
+            aria-label="Toggle dark mode"
+          >
+            <template x-if="isDarkMode">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z" />
+              </svg>
+            </template>
+            <template x-if="!isDarkMode">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </template>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Welcome Hero Unit -->
+    <section class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-950 text-white py-10 px-4 sm:px-6 lg:px-8 shadow-inner relative overflow-hidden">
+      <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-12 translate-y-12 select-none pointer-events-none">
+        <span class="text-[200px] font-extrabold">CH V</span>
+      </div>
+      
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between relative z-10 gap-6">
+        <div class="space-y-3 max-w-3xl">
+          <div class="inline-flex items-center space-x-2 bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-500/30">
+            <svg class="w-3.5 h-3.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+            <span>SetSail Novel Course — Lesson 6 Active Workspace</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black tracking-tight leading-none">
+            Intensive Reading: Animal Farm Chapter 5
+          </h2>
+          <p class="text-emerald-100/90 text-sm sm:text-base leading-relaxed">
+            Welcome to Lesson 6! In this session, we execute a rigorous review of Chapter 5 homework (the conflict between Snowball and Napoleon, and Mollie's escape), dive deep into the 16 fundamental Chapter 5 intensive campaigns, and preview Chapter 6's construction and initial commandments rewriting.
+          </p>
+        </div>
+
+        <div class="bg-emerald-950/60 backdrop-blur border border-emerald-500/30 p-5 rounded-2xl md:w-80 shadow-lg shrink-0">
+          <div class="flex items-center justify-between mb-3 border-b border-emerald-500/20 pb-2">
+            <h3 class="text-xs uppercase tracking-wider font-bold text-emerald-300 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg> 
+              <span>Tutor Dashboard Control</span>
+            </h3>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button 
+              @click="tutorMode = !tutorMode"
+              :class="tutorMode ? 'bg-amber-500 text-stone-950' : 'bg-emerald-800 hover:bg-emerald-700 text-white'"
+              class="w-full text-center py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span x-text="tutorMode ? 'Tutor Mode: ENABLED' : 'Enable Tutor Guide'"></span>
+            </button>
+            <p class="text-[10px] text-emerald-200 italic leading-snug">
+              Enabling Tutor Guide reveals pedagogical tips and analytical criteria under each student question.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+        STICKY TAB NAVIGATION
+        ========================================== -->
+    <nav class="border-b transition-colors sticky top-[64px] z-40 backdrop-blur-md shadow-sm bg-stone-100/95 border-stone-200 dark:bg-zinc-900/95 dark:border-zinc-800">
+      <div class="max-w-7xl mx-auto px-4 overflow-x-auto scrollbar-none">
+        <div class="flex space-x-1 sm:space-x-4 py-3 min-w-max">
+          <!-- Tab 1 -->
+          <button
+            @click="activeTab = 'homework'"
+            :class="activeTab === 'homework' 
+              ? 'bg-emerald-600 text-white shadow-md' 
+              : 'text-stone-600 hover:bg-stone-200 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'"
+            class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            <span>Homework Review</span>
+          </button>
+          
+          <!-- Tab 2 -->
+          <button
+            @click="activeTab = 'reading'"
+            :class="activeTab === 'reading' 
+              ? 'bg-emerald-600 text-white shadow-md' 
+              : 'text-stone-600 hover:bg-stone-200 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'"
+            class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>Reading & Thinking</span>
+          </button>
+
+          <!-- Tab 3 -->
+          <button
+            @click="activeTab = 'preview'"
+            :class="activeTab === 'preview' 
+              ? 'bg-emerald-600 text-white shadow-md' 
+              : 'text-stone-600 hover:bg-stone-200 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200'"
+            class="flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer"
+          >
+            <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+            <span>Next Chapter Preview</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ==========================================
+        MAIN CONTENT CONTAINER
+        ========================================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+      
+      <!-- ==========================================
+          TAB 1: HOMEWORK REVIEW
+          ========================================== -->
+      <div x-show="activeTab === 'homework'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Lesson 5 Homework Evaluation</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Review the outputs from Chapter 5. Use the vocabulary quiz verification and the model answers below to grade the student's homework submission.
+          </p>
+        </div>
+
+        <!-- Part 1: Interactive Vocabulary Recall Quiz -->
+        <div class="p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-stone-150 dark:border-zinc-800">
+            <div class="space-y-1">
+              <h3 class="text-lg font-bold flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg> Chapter 5 Vocab Verification Quiz
+              </h3>
+              <p class="text-xs text-stone-400 dark:text-zinc-500">
+                Test the student on the words expounded in Lesson 5 (*advocating, articulate, baying, blithely, canvassing, disinterred, dynamo, eloquence, expulsion, gaiters, incubators, manifestly, moonshine, pretext, procured, publican, ratified, reinstate, restive, silage, sordid, and watchword*).
+              </p>
+            </div>
+            
+            <template x-if="quizSubmitted">
+              <button 
+                @click="resetQuiz()"
+                class="self-start sm:self-center flex items-center gap-1.5 px-3.5 py-2 bg-stone-100 hover:bg-stone-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl font-bold text-xs transition-all cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" />
+                </svg> Try Again
+              </button>
+            </template>
+          </div>
+
+          <div class="space-y-6">
+            <template x-for="(q, qIdx) in quizQuestions" :key="q.id">
+              <div class="space-y-3">
+                <h4 class="font-bold text-sm sm:text-base text-stone-850 dark:text-zinc-205">
+                  <span x-text="`Q${qIdx + 1}. `"></span>
+                  <span class="text-emerald-600 dark:text-emerald-400" x-text="`${q.word}: `"></span>
+                  <span x-text="q.question"></span>
+                </h4>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <template x-for="(opt, optIdx) in q.options" :key="optIdx">
+                    <button
+                      :disabled="quizSubmitted"
+                      @click="quizAnswers[q.id] = optIdx"
+                      :class="getQuizButtonStyle(q.id, optIdx)"
+                      class="p-3.5 rounded-xl border text-left text-xs sm:text-sm leading-relaxed transition-all cursor-pointer flex items-center justify-between"
+                    >
+                      <span x-text="opt"></span>
+                      <template x-if="quizSubmitted && optIdx === q.correctAnswer">
+                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 ml-1">✓ Correct</span>
+                      </template>
+                    </button>
+                  </template>
+                </div>
+
+                <template x-if="quizSubmitted && quizAnswers[q.id] !== undefined">
+                  <div class="p-3.5 rounded-xl bg-stone-100 dark:bg-zinc-955/60 text-xs text-stone-500 dark:text-zinc-400 border border-stone-200 dark:border-zinc-850 animate-fadeIn leading-relaxed">
+                    <strong>Analytical Explanation:</strong> <span x-text="q.explanation"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+
+          <!-- Quiz Action Footer -->
+          <template x-if="!quizSubmitted">
+            <div class="mt-8 pt-4 border-t border-stone-150 dark:border-zinc-855 flex items-center justify-end">
+              <button
+                @click="submitQuiz()"
+                :disabled="Object.keys(quizAnswers).length < quizQuestions.length"
+                :class="Object.keys(quizAnswers).length < quizQuestions.length
+                  ? 'bg-stone-300 dark:bg-zinc-800 text-stone-500 dark:text-zinc-500 cursor-not-allowed shadow-none'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow shadow-emerald-500/20'"
+                class="px-5 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg> Submit Quiz Answers
+              </button>
+            </div>
+          </template>
+
+          <template x-if="quizSubmitted">
+            <div class="mt-8 p-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md animate-fadeIn">
+              <div class="space-y-1">
+                <span class="text-[10px] tracking-widest font-black uppercase text-emerald-200 block">EVALUATION MET</span>
+                <h4 class="text-xl font-bold" x-text="`Score reached: ${quizScore} / ${quizQuestions.length}`"></h4>
+                <p class="text-xs text-emerald-100" x-text="quizScore === 5 
+                  ? '🎉 Outstanding! The student fully understands Chapter 5 vocabulary and contextual placement.' 
+                  : '👍 Good effort! Discuss the missed terms and prompt them on the remaining definitions.'">
+                </p>
+              </div>
+              <div class="p-3 rounded-xl bg-white/10 border border-white/20 text-center shrink-0">
+                <span class="block text-[10px] uppercase font-bold text-emerald-200">Vocab Status</span>
+                <span class="text-sm font-black tracking-wide" x-text="quizScore === 5 ? '🏆 Mastery' : '🏆 Proficient'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Part 2: Open Reflection Prompts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <template x-for="q in homeworkReviewQuestions" :key="q.id">
+            <div class="p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+              <div class="flex items-center justify-between mb-4 border-b border-stone-100 dark:border-zinc-800 pb-3">
+                <h4 class="font-extrabold text-sm sm:text-base text-stone-855 dark:text-zinc-100" x-text="q.title"></h4>
+                <span class="text-[10px] uppercase font-bold text-amber-500 tracking-wider">Chapter 5 Responses</span>
+              </div>
+
+              <div class="space-y-4">
+                <div class="p-3.5 rounded-xl bg-red-500/5 border border-red-500/10 text-xs sm:text-sm font-semibold italic leading-relaxed text-stone-600 dark:text-zinc-300">
+                  "<span x-text="q.question"></span>"
+                </div>
+
+                <div class="space-y-1.5">
+                  <span class="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 block tracking-wider">Standard Model Answer</span>
+                  <p class="p-4 rounded-xl bg-stone-50 border border-stone-200 text-xs sm:text-sm text-stone-600 dark:bg-zinc-950/40 dark:border-zinc-850 dark:text-zinc-300 leading-relaxed font-mono" x-text="q.modelAnswer"></p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs leading-relaxed text-stone-500 dark:text-zinc-400">
+                  <strong class="text-amber-600 dark:text-amber-400 block mb-1">Evaluation & Scoring Rubric:</strong>
+                  <span x-text="q.rubric"></span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Part 3: Chapter 5 Vocabulary Recall Checklist -->
+        <div class="p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800">
+          <h3 class="text-lg font-bold mb-3 flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg> Chapter 5 Vocabulary Recall Checklist
+          </h3>
+          <p class="text-xs text-stone-500 dark:text-zinc-400 mb-6">
+            Verify that the student completed and mastered the 22 vocabulary words from the Chapter 5 list. Click the words to review their definitions.
+          </p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <template x-for="item in vocabularyCh5" :key="item.word">
+              <div 
+                @click="toggleHomeworkLog(item.word)"
+                :class="viewedHomework.includes(item.word) 
+                  ? 'bg-emerald-50 border-emerald-500 text-emerald-800 dark:bg-emerald-955/40 dark:border-emerald-600 dark:text-emerald-300' 
+                  : 'bg-stone-50 border-stone-200 hover:border-emerald-500 dark:bg-zinc-955/40 dark:border-zinc-800 dark:hover:border-emerald-600'"
+                class="p-3 rounded-xl border text-center cursor-pointer transition-all flex flex-col justify-center min-h-[70px]"
+              >
+                <span class="text-xs font-black block" x-text="item.word"></span>
+                <span class="text-[9px] text-stone-400 uppercase mt-0.5" x-text="viewedHomework.includes(item.word) ? 'Reviewed' : 'Review'"></span>
+              </div>
+            </template>
+          </div>
+
+          <!-- Quick Accordion for Ch5 Vocab Meanings if clicked -->
+          <template x-if="viewedHomework.length > 0">
+            <div class="mt-6 p-4 rounded-2xl bg-stone-50 border border-stone-200 dark:bg-zinc-955/50 dark:border-zinc-855 animate-fadeIn">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block mb-2">Reviewed Definitions</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <template x-for="item in vocabularyCh5.filter(v => viewedHomework.includes(v.word))" :key="`checked-${item.word}`">
+                  <div class="text-xs">
+                    <strong class="text-stone-800 dark:text-zinc-100" x-text="`${item.word}:`"></strong>
+                    <span class="text-stone-500 dark:text-zinc-400" x-text="item.definition"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+
+      </div>
+
+      <!-- ==========================================
+          TAB 2: READING AND THINKING (THEMATIC QUESTS)
+          ========================================== -->
+      <div x-show="activeTab === 'reading'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Chapter 5 Intensive Study Quest</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Let's explore Chapter 5! To keep the study highly engaging, the 13 extensive analytical discussion questions from the textbook have been grouped into four distinct gamified campaigns. Check them off to unlock your revolutionary rank!
+          </p>
+        </div>
+
+        <!-- Quest Tracker Progress Bar -->
+        <div class="p-5 rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 via-teal-500/5 to-emerald-600/5 dark:from-zinc-900 dark:to-zinc-955 dark:border-zinc-800 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+              <span class="text-3xl">🏴‍☠️</span>
+              <div>
+                <span class="text-[10px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest block">Student Quest Title</span>
+                <span class="text-base font-extrabold text-stone-150 dark:text-zinc-150" x-text="questRank"></span>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400" x-text="`Insights Unlocked: ${exploredQuestions.length} / 13`"></span>
+            </div>
+          </div>
+          <!-- Progress Tracker Bar -->
+          <div class="w-full bg-stone-200 dark:bg-zinc-800 rounded-full h-3 overflow-hidden">
+            <div 
+              class="bg-gradient-to-r from-emerald-500 to-teal-600 h-3 rounded-full transition-all duration-500 ease-out" 
+              :style="`width: ${(exploredQuestions.length / 13) * 100}%`"
+            ></div>
+          </div>
+          <p class="text-[11px] text-stone-400 italic leading-snug">
+            Tutors: Tap the checkbox inside each question card as the student successfully explores and discusses the corresponding textbook answer!
+          </p>
+        </div>
+
+        <!-- Tutor Tip Panel -->
+        <div x-show="tutorMode" class="p-5 rounded-2xl bg-amber-50 border border-amber-300 dark:bg-amber-955/20 dark:border-amber-900/50 animate-fadeIn">
+          <div class="flex items-center space-x-2 text-amber-800 dark:text-amber-400 mb-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <h4 class="font-bold text-sm">Active Tutor Guide Mode</h4>
+          </div>
+          <p class="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
+            Pedagogical prompts are highlighted under the questions below. Use these tips to help guide students during classroom discussions of each zone.
+          </p>
+        </div>
+
+        <!-- THE 4 collapsible STORY ZONES -->
+        <div class="space-y-6">
+          <template x-for="zone in zones" :key="zone.id">
+            <div class="border rounded-3xl overflow-hidden transition-all bg-white border-stone-250 dark:bg-zinc-900 dark:border-zinc-800">
+              
+              <!-- Zone Header -->
+              <div 
+                @click="toggleZone(zone.id)"
+                :class="activeZones.includes(zone.id) ? 'bg-emerald-500/10 dark:bg-zinc-955/40' : ''"
+                class="p-5 flex items-center justify-between cursor-pointer select-none transition-colors border-b border-stone-150 dark:border-zinc-800"
+              >
+                <div>
+                  <h3 class="font-black text-sm sm:text-base text-stone-855 dark:text-zinc-100" x-text="zone.title"></h3>
+                  <p class="text-xs text-stone-400 uppercase tracking-wide mt-0.5" x-text="zone.subtitle"></p>
+                </div>
+                <svg 
+                  :class="activeZones.includes(zone.id) ? 'transform rotate-180 text-emerald-600' : 'text-stone-400'" 
+                  class="w-5 h-5 transition-transform duration-200 shrink-0" 
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+
+              <!-- Collapsible Content mapping filtered questions -->
+              <div x-show="activeZones.includes(zone.id)" x-collapse class="p-5 space-y-4 bg-stone-50/40 dark:bg-zinc-955/20">
+                <template x-for="rt in readingThinkingQuestions.filter(q => q.category === zone.id)" :key="rt.id">
+                  
+                  <!-- QUEST QUESTION CARD -->
+                  <div 
+                    x-data="{ detailsOpen: false }"
+                    :class="exploredQuestions.includes(rt.id) 
+                      ? 'border-emerald-500/30 bg-emerald-500/5 dark:bg-zinc-900/50' 
+                      : 'border-stone-200 dark:border-zinc-850 bg-white dark:bg-zinc-900'"
+                    class="p-4 rounded-2xl border transition-all shadow-sm"
+                  >
+                    <div class="flex items-start justify-between gap-4">
+                      
+                      <!-- Checked state toggle checkbox + Question title -->
+                      <div class="flex items-start space-x-3.5 pr-2">
+                        <button 
+                          @click="toggleQuestQuestion(rt.id)"
+                          class="mt-1 flex items-center justify-center w-5 h-5 rounded-lg border text-white transition-all shrink-0 cursor-pointer"
+                          :class="exploredQuestions.includes(rt.id) ? 'bg-emerald-600 border-emerald-600' : 'border-stone-300 dark:border-zinc-700'"
+                        >
+                          <template x-if="exploredQuestions.includes(rt.id)">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </template>
+                        </button>
+
+                        <div @click="detailsOpen = !detailsOpen" class="cursor-pointer select-none">
+                          <span class="text-[10px] font-black tracking-widest text-stone-400 uppercase block" x-text="`Question ${rt.num}`"></span>
+                          <h4 class="font-extrabold text-xs sm:text-sm text-stone-855 dark:text-zinc-155 leading-relaxed hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" x-text="rt.question"></h4>
+                        </div>
+                      </div>
+
+                      <button 
+                        @click="detailsOpen = !detailsOpen" 
+                        class="p-1 rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800 shrink-0 cursor-pointer"
+                      >
+                        <svg 
+                          :class="detailsOpen ? 'transform rotate-180' : ''" 
+                          class="w-4 h-4 transition-transform duration-200" 
+                          fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
+                        >
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <!-- Answer & Tutor guide -->
+                    <div x-show="detailsOpen" x-collapse class="mt-4 pt-4 border-t border-stone-100 dark:border-zinc-800 space-y-3.5 animate-fadeIn">
+                      
+                      <!-- Model Answer block -->
+                      <template x-if="rt.answer">
+                        <div>
+                          <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block mb-1">Model Answer</span>
+                          <p class="text-xs sm:text-sm text-stone-600 dark:text-zinc-350 leading-relaxed font-mono bg-stone-50 dark:bg-zinc-955/40 p-3 rounded-xl" x-text="rt.answer"></p>
+                        </div>
+                      </template>
+
+                      <!-- Pedagogical Tutor Tip -->
+                      <template x-if="tutorMode">
+                        <div class="p-3.5 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-stone-500 dark:text-zinc-400">
+                          <span class="font-extrabold uppercase text-[9px] text-amber-600 dark:text-amber-400 block mb-0.5">TUTOR PROMPT</span>
+                          <span x-text="rt.tutorTip"></span>
+                        </div>
+                      </template>
+
+                    </div>
+                  </div>
+
+                </template>
+              </div>
+
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- ==========================================
+          TAB 3: NEXT CHAPTER PREVIEW (CH 6 PREPARATION)
+          ========================================== -->
+      <div x-show="activeTab === 'preview'" class="space-y-8 animate-fadeIn">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Chapter 6 Preview Workspace</h2>
+          <p class="text-sm text-stone-500 dark:text-zinc-400">
+            Analyze the construction efforts and first amendments to the commandments in Chapter 6. Review the upcoming vocabulary lists and draft your homework questions below.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Ch 6 Summary -->
+          <div class="lg:col-span-1 p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 space-y-4">
+            <h3 class="font-extrabold text-base text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg> Chapter 6 Core focus
+            </h3>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-zinc-355 leading-relaxed">
+              In Chapter 6, the animals continue to build the Windmill, working like slaves. Despite their struggles, Napoleon decides to trade with humans, breaking one of the original resolutions.
+            </p>
+            <p class="text-xs sm:text-sm text-stone-500 dark:text-zinc-355 leading-relaxed">
+              The pigs move into the farmhouse and begin sleeping in beds. Squealer manipulates the commandments, rewriting the Fourth Commandment to state "No animal shall sleep in a bed <strong>with sheets</strong>." During a storm, the Windmill collapses, but Napoleon strategically blames it entirely on the exiled Snowball, offering a reward for his capture.
+            </p>
+
+            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-stone-500 dark:text-zinc-400">
+              <strong class="text-amber-600 dark:text-amber-400 block mb-1">Key Historical Allegory:</strong>
+              This represents the transition of the revolutionary class into a bureaucratic elite—mirroring how Soviet administrators and Communist Party officials hoarded luxuries and resources while directing the working class (the Stakhanovites).
+            </div>
+          </div>
+
+          <!-- Ch 6 Vocab Flashcards -->
+          <div class="lg:col-span-2 p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 flex flex-col justify-between space-y-6">
+            <div class="flex items-center justify-between border-b border-stone-100 dark:border-zinc-800 pb-3">
+              <h3 class="font-bold text-base flex items-center gap-1.5">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5v6h3.25L12 18.75z" />
+                </svg> Chapter 6 Vocabulary Flashcards
+              </h3>
+              <span class="text-[10px] tracking-widest font-extrabold uppercase text-amber-500" x-text="`CARD ${vocabIndex + 1} OF ${vocabularyCh6.length}`"></span>
+            </div>
+
+            <!-- FLASHCARD CORE -->
+            <div class="flex flex-col items-center justify-center max-w-xl mx-auto w-full">
+              <div 
+                @click="isCardFlipped = !isCardFlipped; toggleCh6Vocab(vocabularyCh6[vocabIndex].word)"
+                :class="isCardFlipped 
+                  ? 'bg-zinc-900 text-white border-amber-500 shadow-xl scale-[1.01] dark:bg-zinc-950' 
+                  : 'bg-stone-50 border-stone-200 text-stone-800 shadow hover:shadow-md dark:bg-zinc-955/60 dark:border-zinc-800 dark:text-zinc-150'"
+                class="w-full min-h-[220px] rounded-2xl border cursor-pointer p-6 flex flex-col justify-between transition-all duration-300 relative text-center"
+              >
+                <!-- Voice Speaker -->
+                <div class="absolute top-3 right-3">
+                  <button 
+                    @click.stop="speakWord(vocabularyCh6[vocabIndex].word)"
+                    class="p-1 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/25 transition-all"
+                    title="Speak word"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9H4.5v6h3.25L12 18.75z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Word -->
+                <div class="my-auto py-4">
+                  <template x-if="!isCardFlipped">
+                    <div class="space-y-1">
+                      <h4 class="text-3xl font-black tracking-tight" x-text="vocabularyCh6[vocabIndex].word"></h4>
+                      <span class="block text-xs uppercase font-extrabold text-emerald-500 pt-1">Click to reveal definition</span>
+                    </div>
+                  </template>
+                  
+                  <template x-if="isCardFlipped">
+                    <div class="space-y-4 animate-fadeIn w-full">
+                      <div class="space-y-1 text-center">
+                        <span class="text-[9px] font-bold text-amber-500 tracking-widest block">DEFINITION</span>
+                        <p class="text-sm font-semibold text-stone-855 dark:text-zinc-100" x-text="vocabularyCh6[vocabIndex].definition"></p>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+
+                <span class="text-[9px] text-stone-400 block dark:text-zinc-650">SetSail Foundation Chapter 6 Vocab</span>
+              </div>
+
+              <!-- Navigation controls -->
+              <div class="flex items-center space-x-3 w-full mt-4">
+                <button
+                  @click="isCardFlipped = false; vocabIndex = (vocabIndex === 0 ? vocabularyCh6.length - 1 : vocabIndex - 1)"
+                  class="flex-1 flex items-center justify-center space-x-1 py-2 rounded-xl border bg-stone-100 hover:bg-stone-200 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800 text-xs font-bold transition-all cursor-pointer"
+                >
+                  <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg> <span>Prev</span>
+                </button>
+                <button
+                  @click="isCardFlipped = false; vocabIndex = (vocabIndex === vocabularyCh6.length - 1 ? 0 : vocabIndex + 1)"
+                  class="flex-1 flex items-center justify-center space-x-1 py-2 rounded-xl border bg-stone-100 hover:bg-stone-250 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800 text-xs font-bold transition-all cursor-pointer"
+                >
+                  <span>Next</span> 
+                  <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="border-t border-stone-100 dark:border-zinc-800 pt-3 text-center">
+              <span class="text-xs text-stone-400" x-text="`Reviewed words checklist: ${viewedCh6Vocab.length} / ${vocabularyCh6.length}`"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW HOMEWORK DRAFT STUDIO (CHAPTER 6 PREPARATION) -->
+        <div class="p-6 rounded-3xl border bg-white border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-3 border-b border-stone-100 dark:border-zinc-800">
+            <div class="space-y-1">
+              <h3 class="font-bold text-lg flex items-center gap-1.5">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg> Chapter 6 Homework Drafting Studio
+              </h3>
+              <p class="text-xs text-stone-400 dark:text-zinc-500">
+                Draft your answers to the preview questions for Chapter 6. Check them against the feedback advisor before exporting.
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button
+                @click="getAIFeedback()"
+                :disabled="isGeneratingFeedback"
+                class="px-3 py-1.5 bg-amber-500/15 text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <svg :class="isGeneratingFeedback ? 'animate-spin' : ''" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span x-text="isGeneratingFeedback ? 'Analysing Draft...' : 'Check Answers'"></span>
+              </button>
+              <button
+                @click="exportHomework()"
+                class="px-3 py-1.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                title="Download Homework TXT"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Export Draft</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Homework Question 1 -->
+            <div class="space-y-2">
+              <label class="block text-xs sm:text-sm font-bold text-stone-600 dark:text-zinc-300">
+                Question 1: How do the pigs justify their decision to sleep in the farmhouse beds, and how does Squealer manipulate the animals' memory of the Fourth Commandment?
+              </label>
+              <textarea
+                x-model="homeworkAnswers.q1"
+                placeholder="Draft your response here... (e.g., Squealer claims pigs need beds for brainwork, explaining that a bed is merely a place to sleep and that they sleep without sheets...)"
+                rows="4"
+                class="w-full p-4 text-xs sm:text-sm rounded-xl border border-stone-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all font-mono leading-relaxed"
+              ></textarea>
+            </div>
+
+            <!-- Homework Question 2 -->
+            <div class="space-y-2">
+              <label class="block text-xs sm:text-sm font-bold text-stone-600 dark:text-zinc-355">
+                Question 2: The windmill is destroyed by a storm, but Napoleon immediately blames Snowball. Why is Snowball a convenient scapegoat, and how does this lie consolidate Napoleon's power?
+              </label>
+              <textarea
+                x-model="homeworkAnswers.q2"
+                placeholder="Draft your response here... (e.g., Snowball acts as a convenient scapegoat to distract from building mistakes. It consolidates Napoleon's power by uniting the animals against a common enemy...)"
+                rows="4"
+                class="w-full p-4 text-xs sm:text-sm rounded-xl border border-stone-200 dark:border-zinc-800 bg-transparent focus:ring-2 focus:ring-emerald-500 transition-all font-mono leading-relaxed"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- EVALUATOR REPORT PANEL -->
+          <template x-if="homeworkFeedback.status">
+            <div 
+              :class="isDarkMode ? 'bg-zinc-900 border-amber-500/40 text-zinc-150' : 'bg-amber-500/5 border-amber-300 text-stone-850 shadow-inner'"
+              class="p-6 rounded-2xl border animate-fadeIn space-y-4 mt-6"
+            >
+              <div class="flex items-center justify-between">
+                <h4 class="font-extrabold text-sm sm:text-base flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg> Homework Draft Advisor
+                </h4>
+                <span class="text-[10px] uppercase tracking-widest font-extrabold bg-amber-500/20 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-md" x-text="`Draft Evaluation: ${homeworkFeedback.status}`"></span>
+              </div>
+
+              <div class="space-y-3.5 text-xs sm:text-sm leading-relaxed">
+                <div class="space-y-1">
+                  <span class="block font-bold text-stone-500 dark:text-zinc-400 uppercase text-[10px]">Q1 Feedback:</span>
+                  <p class="p-3 bg-white/45 dark:bg-black/20 rounded-xl border border-black/5 dark:border-white/5" x-text="homeworkFeedback.q1Feedback"></p>
+                </div>
+
+                <div class="space-y-1">
+                  <span class="block font-bold text-stone-500 dark:text-zinc-400 uppercase text-[10px]">Q2 Feedback:</span>
+                  <p class="p-3 bg-white/45 dark:bg-black/20 rounded-xl border border-black/5 dark:border-white/5" x-text="homeworkFeedback.q2Feedback"></p>
+                </div>
+
+                <div class="pt-2 border-t border-black/5 dark:border-white/10 flex items-center justify-between text-xs gap-3 flex-wrap">
+                  <p class="text-stone-500 dark:text-zinc-400 italic">
+                    <strong>Writing tip:</strong> <span x-text="homeworkFeedback.tip"></span>
+                  </p>
+                  <button
+                    @click="copyHomework()"
+                    class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs transition-all cursor-pointer"
+                    x-text="isCopied ? '✓ Copied to Clipboard' : 'Copy Draft Text'"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- ==========================================
+        FOOTER SECTION
+        ========================================== -->
+    <footer class="border-t py-12 transition-colors bg-stone-100 border-stone-200 dark:bg-zinc-950 dark:border-zinc-900 text-zinc-500">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+        <p class="text-xs sm:text-sm">
+          SetSail Novel Course — Animal Farm
+        </p>
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
